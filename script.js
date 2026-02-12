@@ -1,23 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Menu Order</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style href="style.css"></style>
-  </head>
-  <body>
-    <h1>📋 Menu Order</h1>
-
-    <div id="menu" class="grid"></div>
-
-    <div class="cart">
-      <h2>🛒 Cart</h2>
-      <div id="cart"></div>
-      <h3 id="total">Total: ៛0.00</h3>
-    </div>
-
-    <script>
+    
       const MENU = [
         {
           id: 1,
@@ -208,27 +189,4 @@
           this.style.display = "none";
         };
       });
-    </script>
-    <!-- Image Preview Modal -->
-    <div
-      id="imageModal"
-      style="
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-      "
-    >
-      <img
-        id="fullImage"
-        style="max-width: 90%; max-height: 90%; border-radius: 10px"
-      />
-    </div>
-  </body>
-</html>
+    
