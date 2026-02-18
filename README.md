@@ -32,9 +32,7 @@ Users can browse food items, view images, add items to cart, and see total price
 
 ---
 
-## 📁 Project Structure
-
-```
+## 📁 Project Structures
 
 project-folder/
 │── index.html
@@ -46,8 +44,6 @@ project-folder/
 │   ├── photo_1_2026-02-12_09-27-45.jpg
 │   ├── photo_2_2026-02-12_09-27-45.jpg
 │   └── ...
-
-````
 
 ---
 
