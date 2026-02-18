@@ -54,7 +54,6 @@ project-folder/
 ```bash
 git clone https://github.com/your-username/menu-order.git
 ```
-
 2. Open the project folder
 
 ```bash
