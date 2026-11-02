@@ -1,47 +1,21 @@
-const IMG_SUFFIX = "_2026-02-12_09-27-45.jpg";
-
-const RAW_MENU = [
-  { id: 1,  name: "C001 ស៊ុបប្រហិតត្រីឆ្លាតសុទ្ធ", price: 35000 },
-  { id: 2,  name: "C002 ស៊ុបប្រហិតត្រីឆ្លាតរួម", price: 35000 },
-  { id: 3,  name: "C003 ស៊ុបក្បាលត្រីសាលម៉ុន", price: 45000 },
-  { id: 4,  name: "C004 ស៊ុបត្រីក្រហម", price: 42000 },
-  { id: 5,  name: "C005 ស៊ុបត្រីឆ្ពុង", price: 54000 },
-  { id: 6,  name: "C006 ស៊ុបគីស៊ុប", price: 35000 },
-  { id: 7,  name: "C007 ស៊ុបសាច់គោ", price: 35000 },
-  { id: 8,  name: "C008 សាច់អាំងគីមឈី", price: 54000 },
-  { id: 9,  name: "C009 គោឡើងភ្នំ ឈុតរួម", price: 42000 },
-  { id: 10, name: "C010 គោឡើងភ្នំ សាច់ជ្រូកបីជាន់+សាច់គោ", price: 39000 },
-  { id: 11, name: "C011 គោគិច សាច់ជ្រូកបីជាន់+សាច់គោ", price: 42000 },
-  { id: 12, name: "C012 គោគិច សាច់គោ (ធំ)", price: 39000 },
-  { id: 13, name: "C013 គោត្រកួន", price: 30000 },
-  { id: 14, name: "C014 គោត្រកួន (សាច់ជ្រូកបីជាន់)", price: 30000 },
-  { id: 15, name: "C015 គោគិច (តូច)", price: 25000 },
-  { id: 16, name: "C016 គោឡើងភ្នំ -សាច់ជ្រូកបីជាន់ (តូច)", price: 17000 },
-  { id: 17, name: "C017 គោឡើងភ្នំ -សាច់ជ្រូកបីជាន់ (តូច)", price: 17000 },
-  { id: 18,  name: "C001 ស៊ុបប្រហិតត្រីឆ្លាតសុទ្ធ", price: 35000 },
-  { id: 19,  name: "C002 ស៊ុបប្រហិតត្រីឆ្លាតរួម", price: 35000 },
-  { id: 20,  name: "C003 ស៊ុបក្បាលត្រីសាលម៉ុន", price: 45000 },
-  { id: 21,  name: "C004 ស៊ុបត្រីក្រហម", price: 42000 },
-  { id: 22,  name: "C005 ស៊ុបត្រីឆ្ពុង", price: 54000 },
-  { id: 23,  name: "C006 ស៊ុបគីស៊ុប", price: 35000 },
-  { id: 24,  name: "C007 ស៊ុបសាច់គោ", price: 35000 },
-  { id: 25,  name: "C008 សាច់អាំងគីមឈី", price: 54000 },
-  { id: 26,  name: "C009 គោឡើងភ្នំ ឈុតរួម", price: 42000 },
-  { id: 27, name: "C010 គោឡើងភ្នំ សាច់ជ្រូកបីជាន់+សាច់គោ", price: 39000 },
-  { id: 28, name: "C011 គោគិច សាច់ជ្រូកបីជាន់+សាច់គោ", price: 42000 },
-  { id: 29, name: "C012 គោគិច សាច់គោ (ធំ)", price: 39000 },
-  { id: 30, name: "C013 គោត្រកួន", price: 30000 },
-  { id: 31, name: "C014 គោត្រកួន (សាច់ជ្រូកបីជាន់)", price: 30000 },
-  { id: 32, name: "C015 គោគិច (តូច)", price: 25000 },
-  { id: 33, name: "C016 គោឡើងភ្នំ -សាច់ជ្រូកបីជាន់ (តូច)", price: 17000 },
-  { id: 34, name: "C017 គោឡើងភ្នំ -សាច់ជ្រូកបីជាន់ (តូច)", price: 17000 },
+const ITEMS = [
+  ["ស៊ុបត្រីឆ្លាត", 35000],
+  ["គោឡើងភ្នំ", 42000],
+  // ... 55 lines total
 ];
 
-const MENU = RAW_MENU.map(item => ({
-  ...item,
-  name: item.name.trim(),
-  image: `images/photo_${item.id}${IMG_SUFFIX}`,
+const NEW_MENU = ITEMS.map(([name, price], i) => ({
+  id: 18 + i,
+  name: `C${String(18 + i).padStart(3, "0")} ${name}`,
+  price,
+  image: `images/photo_${i + 1}_2026-11-02_23-00-18.jpg`,
 }));
+
+const MENU = [
+  // ... your existing items 1 to 17 ...
+  ...NEW_MENU,
+];
+
 
 const cart = [];
 const menuDiv = document.getElementById("menu");
