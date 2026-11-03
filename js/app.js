@@ -89,8 +89,8 @@ const ITEMS = [
 ];
 
 const NEW_MENU = ITEMS.map(([name, price], i) => ({
-  id: 18 + i,
-  name: `C${String(18 + i).padStart(3, "0")} ${name}`,
+  id: 1 + i,
+  name: `C${String(1 + i).padStart(3, "0")} ${name}`,
   price,
   image: `images/photo_${i + 1}_2026-11-02_23-00-18.jpg`,
 }));
