@@ -84,7 +84,7 @@ const ITEMS = [
   ["អត់ដឹង", 00000],
   ["អត់ដឹង", 00000],
   ["អត់ដឹង", 00000],
-  ["អត់ដឹង", 00000],
+    ["អត់ដឹង", 00000],
   ["អត់ដឹង", 00000],
   ["អត់ដឹង", 00000],
   ["អត់ដឹង", 00000],
@@ -129,28 +129,14 @@ const NEW_MENU = ITEMS.map(([name, price], i) => ({
   id: 1 + i,
   name: `C${String(1 + i).padStart(3, "0")} ${name}`,
   price,
-  image: `images/photo_${i + 1}.jpg`,
+  image: `images/photo_${i + 1}_2026-11-04_09-12-18.jpg`,
 }));
-
-const MENU = [
-  // ... your existing items 1 to 17 ...
-  ...NEW_MENU,
-];
 
 
 const cart = [];
 const menuDiv = document.getElementById("menu");
 const cartDiv = document.getElementById("cart");
 const totalDiv = document.getElementById("total");
-
-function renderBanner() {
-  const banner = document.createElement("img");
-  banner.src = "images/photo_0.jpg";
-  banner.className = "banner";
-  banner.onclick = () => showImage(banner.src);
-  menuDiv.before(banner); // goes above the menu
-}
-
 
 function renderMenu() {
   MENU.forEach((item) => {
@@ -216,7 +202,7 @@ function renderCart() {
 
   totalDiv.innerText = "Total: " + total + "រៀល";
 }
-renderBanner();
+
 renderMenu();
 
 function showImage(src) {
