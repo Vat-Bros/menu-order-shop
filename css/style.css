@@ -71,11 +71,10 @@ button:hover {
 }
 
 
-.banner {
-  display: block;
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-  margin-bottom: 15px;
-  border-radius: 10px;
+#splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000 url("../images/photo_0.jpg") center / contain no-repeat;
+  transition: opacity 0.6s ease;
 }

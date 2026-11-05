@@ -1,3 +1,26 @@
+// ===== Splash screen: shows only photo_0.jpg until everything is loaded =====
+const splash = document.createElement("div");
+splash.id = "splash";
+splash.style.cssText = `
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000 url('images/photo_0.jpg') center / contain no-repeat;
+  transition: opacity 0.6s ease;
+`;
+document.body.appendChild(splash);
+
+const splashStart = Date.now();
+const MIN_SPLASH_MS = 1500; // minimum time to show the splash
+
+window.addEventListener("load", () => {
+  const wait = Math.max(0, MIN_SPLASH_MS - (Date.now() - splashStart));
+  setTimeout(() => {
+    splash.style.opacity = "0";
+    setTimeout(() => splash.remove(), 600);
+  }, wait);
+});
+
 const ITEMS = [
   ["បុកសណ្តែកគួរសាច់គោ", 25000],
   ["ភា្លសាច់គោ", 25000],
@@ -207,16 +230,6 @@ function renderCart() {
 
   totalDiv.innerText = "Total: " + total + "រៀល";
 }
-
-function renderBanner() {
-  const banner = document.createElement("img");
-  banner.src = "images/photo_0.jpg";
-  banner.className = "banner";
-  banner.onclick = () => showImage(banner.src);
-  menuDiv.before(banner); // goes above the menu
-}
-
-renderBanner();
 
 renderMenu();
 
