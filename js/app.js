@@ -132,6 +132,11 @@ const NEW_MENU = ITEMS.map(([name, price], i) => ({
   image: `images/photo_${i + 1}_2026-11-04_09-12-18.jpg`,
 }));
 
+const MENU = [
+  // ... your existing items 1 to 17 ...
+  ...NEW_MENU,
+];
+
 
 const cart = [];
 const menuDiv = document.getElementById("menu");
