@@ -143,6 +143,15 @@ const menuDiv = document.getElementById("menu");
 const cartDiv = document.getElementById("cart");
 const totalDiv = document.getElementById("total");
 
+function renderBanner() {
+  const banner = document.createElement("img");
+  banner.src = "images/photo_0.jpg";
+  banner.className = "banner";
+  banner.onclick = () => showImage(banner.src);
+  menuDiv.before(banner); // goes above the menu
+}
+
+
 function renderMenu() {
   MENU.forEach((item) => {
     const card = document.createElement("div");
@@ -207,7 +216,7 @@ function renderCart() {
 
   totalDiv.innerText = "Total: " + total + "រៀល";
 }
-
+renderBanner();
 renderMenu();
 
 function showImage(src) {
