@@ -208,6 +208,16 @@ function renderCart() {
   totalDiv.innerText = "Total: " + total + "រៀល";
 }
 
+function renderBanner() {
+  const banner = document.createElement("img");
+  banner.src = "images/photo_0.jpg";
+  banner.className = "banner";
+  banner.onclick = () => showImage(banner.src);
+  menuDiv.before(banner); // goes above the menu
+}
+
+renderBanner();
+
 renderMenu();
 
 function showImage(src) {
