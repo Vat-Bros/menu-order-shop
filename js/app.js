@@ -1,4 +1,3 @@
-const IMG_SUFFIX = "_2026-02-12_09-27-45.jpg";
 
 const RAW_MENU = [
   { id: 1,  name: "កង្កែបឆាគ្រឿង", price: 0, image: "កង្កែបឆាគ្រឿង.jpg" },
@@ -96,7 +95,7 @@ const RAW_MENU = [
 const MENU = RAW_MENU.map(item => ({
   ...item,
   name: item.name.trim(),
-  image: `images/photo_${item.id}${IMG_SUFFIX}`,
+  image: `images/${encodeURIComponent(item.image)}`,
 }));
 
 const cart = [];
