@@ -109,6 +109,7 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: pan-y;
 }
 
 .slideshow-toggle {
@@ -164,6 +165,14 @@ button:hover {
 @media (hover: hover) {
   .image-modal:hover .slideshow-control,
   .image-modal:focus-within .slideshow-control {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (hover: none) {
+  .slideshow-toggle,
+  .slideshow-control {
     opacity: 1;
     pointer-events: auto;
   }

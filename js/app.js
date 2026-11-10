@@ -123,6 +123,7 @@ function renderMenu() {
   filteredMenu.forEach((item) => {
     const card = document.createElement("div");
     card.className = "card";
+    card.dataset.menuImage = item.image;
 
     card.innerHTML = `
           <img src="${item.image}" onclick="showImage('${item.image}')">
@@ -198,7 +199,6 @@ function showImage(src) {
   slideshowPaused = false;
   updateSlideshowImage();
   fullImage.setAttribute("aria-label", "Slideshow playing. Activate to pause.");
-  fullImage.title = "Click to pause slideshow";
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
   startSlideshow();
@@ -212,9 +212,19 @@ const fullImage = document.getElementById("fullImage");
 const slideshowToggle = document.getElementById("toggleSlideshow");
 const slideshowFrame = document.querySelector(".slideshow-frame");
 let controlsHideTimer;
+let swipeStart;
+let suppressImageClick = false;
 
 function updateSlideshowImage() {
   fullImage.src = MENU[slideshowIndex].image;
+  scrollMenuToCurrentItem();
+}
+
+function scrollMenuToCurrentItem() {
+  const image = MENU[slideshowIndex].image;
+  const card = [...menuDiv.querySelectorAll(".card")]
+    .find((menuCard) => menuCard.dataset.menuImage === image);
+  card?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function showNextSlide() {
@@ -260,6 +270,30 @@ function closeSlideshow() {
 
 slideshowFrame.addEventListener("pointerdown", (event) => {
   if (event.pointerType !== "touch") return;
+  swipeStart = { x: event.clientX, y: event.clientY };
+});
+
+slideshowFrame.addEventListener("pointerup", (event) => {
+  if (!swipeStart || event.pointerType !== "touch") return;
+  const deltaX = event.clientX - swipeStart.x;
+  const deltaY = event.clientY - swipeStart.y;
+  swipeStart = null;
+
+  if (Math.abs(deltaX) < 40 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+  suppressImageClick = true;
+  setTimeout(() => {
+    suppressImageClick = false;
+  }, 400);
+  if (deltaX < 0) showNextSlide();
+  else showPreviousSlide();
+});
+
+slideshowFrame.addEventListener("pointercancel", () => {
+  swipeStart = null;
+});
+
+slideshowFrame.addEventListener("pointerdown", (event) => {
+  if (event.pointerType !== "touch") return;
   clearTimeout(controlsHideTimer);
   slideshowFrame.classList.add("controls-visible");
   imageModal.classList.add("controls-visible");
@@ -269,7 +303,10 @@ slideshowFrame.addEventListener("pointerdown", (event) => {
   }, 1800);
 });
 
-fullImage.addEventListener("click", toggleSlideshowPause);
+fullImage.addEventListener("click", () => {
+  if (suppressImageClick) return;
+  toggleSlideshowPause();
+});
 slideshowToggle.addEventListener("click", toggleSlideshowPause);
 document.getElementById("nextSlide").addEventListener("click", showNextSlide);
 document.getElementById("previousSlide").addEventListener("click", showPreviousSlide);
