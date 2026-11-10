@@ -192,14 +192,53 @@ if (searchInput) {
 
 function showImage(src) {
   const modal = document.getElementById("imageModal");
-  const fullImage = document.getElementById("fullImage");
+  slideshowIndex = MENU.findIndex((item) => item.image === src);
+  if (slideshowIndex === -1) return;
 
-  fullImage.src = src;
-  modal.style.display = "flex";
+  updateSlideshowImage();
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  startSlideshow();
 }
-// close when click anywhere on modal
-document.addEventListener("DOMContentLoaded", function () {
-  document.getElementById("imageModal").onclick = function () {
-    this.style.display = "none";
-  };
+
+let slideshowIndex = 0;
+let slideshowTimer;
+const imageModal = document.getElementById("imageModal");
+
+function updateSlideshowImage() {
+  document.getElementById("fullImage").src = MENU[slideshowIndex].image;
+}
+
+function showNextSlide() {
+  slideshowIndex = (slideshowIndex + 1) % MENU.length;
+  updateSlideshowImage();
+}
+
+function showPreviousSlide() {
+  slideshowIndex = (slideshowIndex - 1 + MENU.length) % MENU.length;
+  updateSlideshowImage();
+}
+
+function startSlideshow() {
+  clearInterval(slideshowTimer);
+  slideshowTimer = setInterval(showNextSlide, 3000);
+}
+
+function closeSlideshow() {
+  clearInterval(slideshowTimer);
+  imageModal.classList.remove("is-open");
+  imageModal.setAttribute("aria-hidden", "true");
+}
+
+document.getElementById("nextSlide").addEventListener("click", showNextSlide);
+document.getElementById("previousSlide").addEventListener("click", showPreviousSlide);
+document.getElementById("closeSlideshow").addEventListener("click", closeSlideshow);
+imageModal.addEventListener("click", (event) => {
+  if (event.target === imageModal) closeSlideshow();
+});
+document.addEventListener("keydown", (event) => {
+  if (!imageModal.classList.contains("is-open")) return;
+  if (event.key === "Escape") closeSlideshow();
+  if (event.key === "ArrowRight") showNextSlide();
+  if (event.key === "ArrowLeft") showPreviousSlide();
 });

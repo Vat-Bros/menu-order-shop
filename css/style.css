@@ -79,6 +79,61 @@ button:hover {
   margin-left: 10px;
 }
 
-#imageModal {
-  cursor: pointer;
+.image-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.image-modal.is-open {
+  display: flex;
+}
+
+.image-modal img {
+  max-width: min(80vw, 1100px);
+  max-height: 85vh;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.slideshow-control,
+.slideshow-close {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  flex: 0 0 auto;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.slideshow-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 42px;
+  height: 42px;
+  font-size: 28px;
+}
+
+@media (max-width: 600px) {
+  .image-modal {
+    gap: 8px;
+    padding: 16px 8px;
+  }
+
+  .image-modal img {
+    max-width: calc(100vw - 120px);
+  }
+
+  .slideshow-control {
+    width: 40px;
+    height: 44px;
+  }
 }
