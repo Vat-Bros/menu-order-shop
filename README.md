@@ -15,7 +15,7 @@ Users can browse food items, view images, add items to cart, and see total price
 ## 🚀 Features
 
 - 📋 Display menu items in a responsive grid  
-- 🖼 Click image to preview in full screen modal  
+- 🖼 Browse menu photos manually in a full-screen viewer with swipe navigation and zoom controls
 - ➕ Add items to cart  
 - ❌ Remove items from cart  
 - 🔢 Quantity auto-increment when adding same item  

@@ -196,28 +196,44 @@ function showImage(src) {
   slideshowIndex = MENU.findIndex((item) => item.image === src);
   if (slideshowIndex === -1) return;
 
-  slideshowPaused = false;
   updateSlideshowImage();
-  fullImage.setAttribute("aria-label", "Slideshow playing. Activate to pause.");
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
-  startSlideshow();
 }
 
 let slideshowIndex = 0;
-let slideshowTimer;
-let slideshowPaused = false;
 const imageModal = document.getElementById("imageModal");
 const fullImage = document.getElementById("fullImage");
-const slideshowToggle = document.getElementById("toggleSlideshow");
 const slideshowFrame = document.querySelector(".slideshow-frame");
 let controlsHideTimer;
-let swipeStart;
-let suppressImageClick = false;
+let zoomScale = 1;
+let zoomOffsetX = 0;
+let zoomOffsetY = 0;
+let activePointers = new Map();
+let gestureStart = null;
+let pinchStartDistance = 0;
+let pinchStartScale = 1;
+let pinchOccurred = false;
 
 function updateSlideshowImage() {
   fullImage.src = MENU[slideshowIndex].image;
+  setZoom(1);
   scrollMenuToCurrentItem();
+}
+
+function setZoom(scale) {
+  zoomScale = Math.min(3, Math.max(1, scale));
+  if (zoomScale === 1) {
+    zoomOffsetX = 0;
+    zoomOffsetY = 0;
+  }
+  const maxX = (slideshowFrame.clientWidth * (zoomScale - 1)) / 2;
+  const maxY = (slideshowFrame.clientHeight * (zoomScale - 1)) / 2;
+  zoomOffsetX = Math.min(maxX, Math.max(-maxX, zoomOffsetX));
+  zoomOffsetY = Math.min(maxY, Math.max(-maxY, zoomOffsetY));
+  fullImage.style.transform = `translate(${zoomOffsetX}px, ${zoomOffsetY}px) scale(${zoomScale})`;
+  document.getElementById("zoomOut").disabled = zoomScale === 1;
+  document.getElementById("zoomIn").disabled = zoomScale === 3;
 }
 
 function scrollMenuToCurrentItem() {
@@ -237,59 +253,77 @@ function showPreviousSlide() {
   updateSlideshowImage();
 }
 
-function startSlideshow() {
-  clearInterval(slideshowTimer);
-  if (!slideshowPaused) {
-    slideshowTimer = setInterval(showNextSlide, 3000);
-  }
-}
-
-function toggleSlideshowPause() {
-  slideshowPaused = !slideshowPaused;
-  slideshowToggle.textContent = slideshowPaused ? "▶" : "Ⅱ";
-  slideshowToggle.setAttribute("aria-label", slideshowPaused ? "Resume slideshow" : "Pause slideshow");
-  slideshowToggle.setAttribute("aria-pressed", String(slideshowPaused));
-  fullImage.setAttribute(
-    "aria-label",
-    slideshowPaused ? "Slideshow paused" : "Slideshow playing"
-  );
-  startSlideshow();
-}
-
 function closeSlideshow() {
-  clearInterval(slideshowTimer);
   clearTimeout(controlsHideTimer);
   slideshowFrame.classList.remove("controls-visible");
-  slideshowPaused = false;
-  slideshowToggle.textContent = "Ⅱ";
-  slideshowToggle.setAttribute("aria-label", "Pause slideshow");
-  slideshowToggle.setAttribute("aria-pressed", "false");
+  setZoom(1);
   imageModal.classList.remove("is-open");
   imageModal.setAttribute("aria-hidden", "true");
 }
 
 slideshowFrame.addEventListener("pointerdown", (event) => {
-  if (event.pointerType !== "touch") return;
-  swipeStart = { x: event.clientX, y: event.clientY };
+  if (event.pointerType !== "touch" || event.target.closest("button")) return;
+  slideshowFrame.setPointerCapture(event.pointerId);
+  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+  if (activePointers.size === 1) {
+    gestureStart = { x: event.clientX, y: event.clientY, offsetX: zoomOffsetX, offsetY: zoomOffsetY };
+    pinchOccurred = false;
+  } else if (activePointers.size === 2) {
+    const [first, second] = [...activePointers.values()];
+    pinchStartDistance = Math.hypot(second.x - first.x, second.y - first.y);
+    pinchStartScale = zoomScale;
+    pinchOccurred = true;
+  }
 });
 
-slideshowFrame.addEventListener("pointerup", (event) => {
-  if (!swipeStart || event.pointerType !== "touch") return;
-  const deltaX = event.clientX - swipeStart.x;
-  const deltaY = event.clientY - swipeStart.y;
-  swipeStart = null;
+slideshowFrame.addEventListener("pointermove", (event) => {
+  if (!activePointers.has(event.pointerId)) return;
+  activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
 
-  if (Math.abs(deltaX) < 40 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
-  suppressImageClick = true;
-  setTimeout(() => {
-    suppressImageClick = false;
-  }, 400);
-  if (deltaX < 0) showNextSlide();
-  else showPreviousSlide();
+  if (activePointers.size >= 2) {
+    const [first, second] = [...activePointers.values()];
+    const distance = Math.hypot(second.x - first.x, second.y - first.y);
+    if (pinchStartDistance > 0) {
+      setZoom(pinchStartScale * (distance / pinchStartDistance));
+    }
+    return;
+  }
+
+  if (zoomScale > 1 && gestureStart) {
+    zoomOffsetX = gestureStart.offsetX + event.clientX - gestureStart.x;
+    zoomOffsetY = gestureStart.offsetY + event.clientY - gestureStart.y;
+    setZoom(zoomScale);
+  }
 });
 
-slideshowFrame.addEventListener("pointercancel", () => {
-  swipeStart = null;
+function finishPointerGesture(event) {
+  if (!activePointers.has(event.pointerId)) return;
+  const start = gestureStart;
+  activePointers.delete(event.pointerId);
+  if (activePointers.size === 0) {
+    if (start && !pinchOccurred && zoomScale === 1) {
+      const deltaX = event.clientX - start.x;
+      const deltaY = event.clientY - start.y;
+      if (Math.abs(deltaX) >= 40 && Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX < 0) showNextSlide();
+        else showPreviousSlide();
+      }
+    }
+    gestureStart = null;
+    pinchStartDistance = 0;
+    pinchOccurred = false;
+  }
+}
+
+slideshowFrame.addEventListener("pointerup", finishPointerGesture);
+slideshowFrame.addEventListener("pointercancel", (event) => {
+  activePointers.delete(event.pointerId);
+  if (activePointers.size === 0) {
+    gestureStart = null;
+    pinchStartDistance = 0;
+    pinchOccurred = false;
+  }
 });
 
 slideshowFrame.addEventListener("pointerdown", (event) => {
@@ -303,11 +337,10 @@ slideshowFrame.addEventListener("pointerdown", (event) => {
   }, 1800);
 });
 
-fullImage.addEventListener("click", () => {
-  if (suppressImageClick) return;
-  toggleSlideshowPause();
+document.getElementById("zoomOut").addEventListener("click", () => setZoom(zoomScale - 0.25));
+document.getElementById("zoomIn").addEventListener("click", () => {
+  setZoom(zoomScale + 0.25);
 });
-slideshowToggle.addEventListener("click", toggleSlideshowPause);
 document.getElementById("nextSlide").addEventListener("click", showNextSlide);
 document.getElementById("previousSlide").addEventListener("click", showPreviousSlide);
 document.getElementById("closeSlideshow").addEventListener("click", closeSlideshow);
