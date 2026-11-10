@@ -102,16 +102,39 @@ const menuDiv = document.getElementById("menu");
 const cartDiv = document.getElementById("cart");
 const totalDiv = document.getElementById("total");
 const searchInput = document.getElementById("searchInput");
+const searchWrap = document.querySelector(".search-wrap");
+const searchToggle = document.getElementById("searchToggle");
+const searchCollapseThreshold = searchWrap ? searchWrap.offsetTop : 0;
 
 function normalizeQuery(value) {
   return value.toLowerCase().trim();
 }
 
-function renderMenu() {
+function getFilteredMenu() {
   const query = normalizeQuery(searchInput ? searchInput.value : "");
-  const filteredMenu = query
+  return query
     ? MENU.filter((item) => item.name.toLowerCase().includes(query))
     : MENU;
+}
+
+function updateSearchState() {
+  const isScrolled = window.scrollY > searchCollapseThreshold;
+  searchWrap.classList.toggle("is-scrolled", isScrolled);
+
+  if (!isScrolled) {
+    searchWrap.classList.remove("is-expanded");
+  }
+
+  const isExpanded = !isScrolled || searchWrap.classList.contains("is-expanded");
+  searchToggle.setAttribute("aria-expanded", String(isExpanded));
+  searchToggle.setAttribute(
+    "aria-label",
+    isExpanded ? "Search menu items" : "Open search",
+  );
+}
+
+function renderMenu() {
+  const filteredMenu = getFilteredMenu();
 
   menuDiv.innerHTML = "";
 
@@ -191,9 +214,50 @@ if (searchInput) {
   searchInput.addEventListener("input", renderMenu);
 }
 
+if (searchWrap && searchToggle && searchInput) {
+  window.addEventListener("scroll", updateSearchState, { passive: true });
+
+  searchToggle.addEventListener("click", () => {
+    if (searchWrap.classList.contains("is-scrolled")) {
+      searchWrap.classList.toggle("is-expanded");
+      updateSearchState();
+
+      if (!searchWrap.classList.contains("is-expanded")) {
+        searchToggle.focus();
+        return;
+      }
+    }
+
+    searchInput.focus();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (
+      !searchWrap.classList.contains("is-expanded") ||
+      searchWrap.contains(event.target)
+    ) {
+      return;
+    }
+
+    searchWrap.classList.remove("is-expanded");
+    updateSearchState();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && searchWrap.classList.contains("is-expanded")) {
+      searchWrap.classList.remove("is-expanded");
+      updateSearchState();
+      searchToggle.focus();
+    }
+  });
+
+  updateSearchState();
+}
+
 function showImage(src) {
   const modal = document.getElementById("imageModal");
-  slideshowIndex = MENU.findIndex((item) => item.image === src);
+  slideshowItems = getFilteredMenu();
+  slideshowIndex = slideshowItems.findIndex((item) => item.image === src);
   if (slideshowIndex === -1) return;
 
   updateSlideshowImage();
@@ -202,6 +266,7 @@ function showImage(src) {
 }
 
 let slideshowIndex = 0;
+let slideshowItems = MENU;
 const imageModal = document.getElementById("imageModal");
 const fullImage = document.getElementById("fullImage");
 const slideshowFrame = document.querySelector(".slideshow-frame");
@@ -216,7 +281,9 @@ let pinchStartScale = 1;
 let pinchOccurred = false;
 
 function updateSlideshowImage() {
-  fullImage.src = MENU[slideshowIndex].image;
+  fullImage.src = slideshowItems[slideshowIndex].image;
+  document.getElementById("previousSlide").disabled = slideshowIndex === 0;
+  document.getElementById("nextSlide").disabled = slideshowIndex === slideshowItems.length - 1;
   setZoom(1);
   scrollMenuToCurrentItem();
 }
@@ -237,19 +304,21 @@ function setZoom(scale) {
 }
 
 function scrollMenuToCurrentItem() {
-  const image = MENU[slideshowIndex].image;
+  const image = slideshowItems[slideshowIndex].image;
   const card = [...menuDiv.querySelectorAll(".card")]
     .find((menuCard) => menuCard.dataset.menuImage === image);
   card?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function showNextSlide() {
-  slideshowIndex = (slideshowIndex + 1) % MENU.length;
+  if (slideshowIndex >= slideshowItems.length - 1) return;
+  slideshowIndex++;
   updateSlideshowImage();
 }
 
 function showPreviousSlide() {
-  slideshowIndex = (slideshowIndex - 1 + MENU.length) % MENU.length;
+  if (slideshowIndex <= 0) return;
+  slideshowIndex--;
   updateSlideshowImage();
 }
 
