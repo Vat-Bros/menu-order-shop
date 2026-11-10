@@ -101,9 +101,26 @@ const cart = [];
 const menuDiv = document.getElementById("menu");
 const cartDiv = document.getElementById("cart");
 const totalDiv = document.getElementById("total");
+const searchInput = document.getElementById("searchInput");
+
+function normalizeQuery(value) {
+  return value.toLowerCase().trim();
+}
 
 function renderMenu() {
-  MENU.forEach((item) => {
+  const query = normalizeQuery(searchInput ? searchInput.value : "");
+  const filteredMenu = query
+    ? MENU.filter((item) => item.name.toLowerCase().includes(query))
+    : MENU;
+
+  menuDiv.innerHTML = "";
+
+  if (filteredMenu.length === 0) {
+    menuDiv.innerHTML = "<p>No menu items found.</p>";
+    return;
+  }
+
+  filteredMenu.forEach((item) => {
     const card = document.createElement("div");
     card.className = "card";
 
@@ -168,6 +185,10 @@ function renderCart() {
 }
 
 renderMenu();
+
+if (searchInput) {
+  searchInput.addEventListener("input", renderMenu);
+}
 
 function showImage(src) {
   const modal = document.getElementById("imageModal");
