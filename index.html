@@ -30,7 +30,10 @@
     <div id="imageModal" class="image-modal" aria-label="Menu photo slideshow" aria-hidden="true">
       <button id="closeSlideshow" class="slideshow-close" type="button" aria-label="Close slideshow">×</button>
       <button id="previousSlide" class="slideshow-control" type="button" aria-label="Previous photo">‹</button>
-      <img id="fullImage" alt="Menu item" />
+      <div class="slideshow-frame">
+        <img id="fullImage" alt="Menu item" />
+        <button id="toggleSlideshow" class="slideshow-toggle" type="button" aria-label="Pause slideshow" aria-pressed="false">Ⅱ</button>
+      </div>
       <button id="nextSlide" class="slideshow-control" type="button" aria-label="Next photo">›</button>
     </div>
   </body>

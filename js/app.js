@@ -195,7 +195,10 @@ function showImage(src) {
   slideshowIndex = MENU.findIndex((item) => item.image === src);
   if (slideshowIndex === -1) return;
 
+  slideshowPaused = false;
   updateSlideshowImage();
+  fullImage.setAttribute("aria-label", "Slideshow playing. Activate to pause.");
+  fullImage.title = "Click to pause slideshow";
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
   startSlideshow();
@@ -203,10 +206,15 @@ function showImage(src) {
 
 let slideshowIndex = 0;
 let slideshowTimer;
+let slideshowPaused = false;
 const imageModal = document.getElementById("imageModal");
+const fullImage = document.getElementById("fullImage");
+const slideshowToggle = document.getElementById("toggleSlideshow");
+const slideshowFrame = document.querySelector(".slideshow-frame");
+let controlsHideTimer;
 
 function updateSlideshowImage() {
-  document.getElementById("fullImage").src = MENU[slideshowIndex].image;
+  fullImage.src = MENU[slideshowIndex].image;
 }
 
 function showNextSlide() {
@@ -221,15 +229,48 @@ function showPreviousSlide() {
 
 function startSlideshow() {
   clearInterval(slideshowTimer);
-  slideshowTimer = setInterval(showNextSlide, 3000);
+  if (!slideshowPaused) {
+    slideshowTimer = setInterval(showNextSlide, 3000);
+  }
+}
+
+function toggleSlideshowPause() {
+  slideshowPaused = !slideshowPaused;
+  slideshowToggle.textContent = slideshowPaused ? "▶" : "Ⅱ";
+  slideshowToggle.setAttribute("aria-label", slideshowPaused ? "Resume slideshow" : "Pause slideshow");
+  slideshowToggle.setAttribute("aria-pressed", String(slideshowPaused));
+  fullImage.setAttribute(
+    "aria-label",
+    slideshowPaused ? "Slideshow paused" : "Slideshow playing"
+  );
+  startSlideshow();
 }
 
 function closeSlideshow() {
   clearInterval(slideshowTimer);
+  clearTimeout(controlsHideTimer);
+  slideshowFrame.classList.remove("controls-visible");
+  slideshowPaused = false;
+  slideshowToggle.textContent = "Ⅱ";
+  slideshowToggle.setAttribute("aria-label", "Pause slideshow");
+  slideshowToggle.setAttribute("aria-pressed", "false");
   imageModal.classList.remove("is-open");
   imageModal.setAttribute("aria-hidden", "true");
 }
 
+slideshowFrame.addEventListener("pointerdown", (event) => {
+  if (event.pointerType !== "touch") return;
+  clearTimeout(controlsHideTimer);
+  slideshowFrame.classList.add("controls-visible");
+  imageModal.classList.add("controls-visible");
+  controlsHideTimer = setTimeout(() => {
+    slideshowFrame.classList.remove("controls-visible");
+    imageModal.classList.remove("controls-visible");
+  }, 1800);
+});
+
+fullImage.addEventListener("click", toggleSlideshowPause);
+slideshowToggle.addEventListener("click", toggleSlideshowPause);
 document.getElementById("nextSlide").addEventListener("click", showNextSlide);
 document.getElementById("previousSlide").addEventListener("click", showPreviousSlide);
 document.getElementById("closeSlideshow").addEventListener("click", closeSlideshow);
