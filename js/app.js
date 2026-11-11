@@ -417,6 +417,21 @@ imageModal.addEventListener("click", (event) => {
   if (event.target === imageModal) closeSlideshow();
 });
 document.addEventListener("keydown", (event) => {
+  const zoomKeys = ["+", "=", "-", "_", "0"];
+  const isZoomShortcut = zoomKeys.includes(event.key)
+    || event.code === "NumpadAdd"
+    || event.code === "NumpadSubtract";
+  if ((event.ctrlKey || event.metaKey) && isZoomShortcut) {
+    event.preventDefault();
+  }
+});
+document.addEventListener("wheel", (event) => {
+  if (event.ctrlKey || event.metaKey) event.preventDefault();
+}, { passive: false });
+["gesturestart", "gesturechange", "gestureend"].forEach((gestureEvent) => {
+  document.addEventListener(gestureEvent, (event) => event.preventDefault(), { passive: false });
+});
+document.addEventListener("keydown", (event) => {
   if (!imageModal.classList.contains("is-open")) return;
   if (event.key === "Escape") closeSlideshow();
   if (event.key === "ArrowRight") showNextSlide();
