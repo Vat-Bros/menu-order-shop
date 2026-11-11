@@ -428,6 +428,9 @@ document.addEventListener("keydown", (event) => {
 document.addEventListener("wheel", (event) => {
   if (event.ctrlKey || event.metaKey) event.preventDefault();
 }, { passive: false });
+document.addEventListener("touchmove", (event) => {
+  if (event.touches.length > 1) event.preventDefault();
+}, { passive: false });
 ["gesturestart", "gesturechange", "gestureend"].forEach((gestureEvent) => {
   document.addEventListener(gestureEvent, (event) => event.preventDefault(), { passive: false });
 });
