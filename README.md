@@ -20,6 +20,7 @@ Users can browse food items, view images, add items to cart, and see total price
 - ❌ Remove items from cart  
 - 🔢 Quantity auto-increment when adding same item  
 - 💰 Auto calculate total price  
+- 🖨 Print an 80 × 80 mm receipt
 - 📱 Mobile-friendly layout  
 
 ---

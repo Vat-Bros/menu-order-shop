@@ -130,6 +130,42 @@ button:hover {
   border-radius: 10px;
 }
 
+.cart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cart-header h2 {
+  margin: 0;
+}
+
+#printReceipt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+}
+
+#printReceipt svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+#printReceipt:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .cart-item {
   display: flex;
   justify-content: space-between;
@@ -141,6 +177,10 @@ button:hover {
   color: red;
   cursor: pointer;
   margin-left: 10px;
+}
+
+.receipt {
+  display: none;
 }
 
 .image-modal {
@@ -295,5 +335,69 @@ button:hover {
   .slideshow-control {
     width: 40px;
     height: 44px;
+  }
+}
+
+@page {
+  size: 80mm 80mm;
+  margin: 2mm;
+}
+
+@media print {
+  html,
+  body {
+    width: 80mm;
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #receipt,
+  #receipt * {
+    visibility: visible;
+  }
+
+  #receipt {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 76mm;
+    min-height: 76mm;
+    box-sizing: border-box;
+    padding: 2mm;
+    color: #000;
+    font-family: Arial, sans-serif;
+    font-size: 10pt;
+  }
+
+  #receipt h1 {
+    margin: 0 0 3mm;
+    text-align: center;
+    font-size: 16pt;
+  }
+
+  .receipt-date {
+    margin: 0 0 2mm;
+    text-align: center;
+    font-size: 8pt;
+  }
+
+  .receipt-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 3mm;
+    padding: 1.5mm 0;
+    border-bottom: 1px dashed #888;
+  }
+
+  .receipt-total {
+    margin-top: 4mm;
+    text-align: right;
+    font-size: 12pt;
   }
 }

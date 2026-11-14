@@ -101,6 +101,8 @@ const cart = [];
 const menuDiv = document.getElementById("menu");
 const cartDiv = document.getElementById("cart");
 const totalDiv = document.getElementById("total");
+const printReceiptButton = document.getElementById("printReceipt");
+const receiptDiv = document.getElementById("receipt");
 const searchInput = document.getElementById("searchInput");
 const searchWrap = document.querySelector(".search-wrap");
 const searchToggle = document.getElementById("searchToggle");
@@ -181,6 +183,7 @@ function removeFromCart(id) {
 
 function renderCart() {
   cartDiv.innerHTML = "";
+  printReceiptButton.disabled = cart.length === 0;
   let total = 0;
 
   if (cart.length === 0) {
@@ -208,7 +211,46 @@ function renderCart() {
   totalDiv.innerText = "Total: " + total + "រៀល";
 }
 
+function printReceipt() {
+  const receiptTitle = document.createElement("h1");
+  receiptTitle.textContent = "Menu Order";
+  receiptDiv.replaceChildren(receiptTitle);
+
+  const date = document.createElement("p");
+  date.className = "receipt-date";
+  date.textContent = new Date().toLocaleString();
+  receiptDiv.appendChild(date);
+
+  const divider = document.createElement("hr");
+  receiptDiv.appendChild(divider);
+
+  let total = 0;
+  cart.forEach((item) => {
+    const itemTotal = item.price * item.qty;
+    total += itemTotal;
+
+    const row = document.createElement("div");
+    row.className = "receipt-item";
+
+    const name = document.createElement("span");
+    name.textContent = `${item.name} × ${item.qty}`;
+    const price = document.createElement("span");
+    price.textContent = `${itemTotal.toFixed(2)} ៛`;
+    row.append(name, price);
+    receiptDiv.appendChild(row);
+  });
+
+  const totalLine = document.createElement("h2");
+  totalLine.className = "receipt-total";
+  totalLine.textContent = `Total: ${total.toFixed(2)} ៛`;
+  receiptDiv.appendChild(totalLine);
+
+  window.print();
+}
+
 renderMenu();
+renderCart();
+printReceiptButton.addEventListener("click", printReceipt);
 
 if (searchInput) {
   searchInput.addEventListener("input", renderMenu);
