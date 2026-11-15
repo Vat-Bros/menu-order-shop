@@ -382,28 +382,18 @@ button:hover {
 @media print {
   html,
   body {
-    width: 80mm;
     margin: 0;
     padding: 0;
     background: white;
   }
 
-  body * {
-    visibility: hidden;
-  }
-
-  #receipt,
-  #receipt * {
-    visibility: visible;
+  body > :not(#receipt) {
+    display: none !important;
   }
 
   #receipt {
-    position: absolute;
-    top: 0;
-    left: 0;
     display: block;
-    width: 76mm;
-    min-height: 76mm;
+    width: 100%;
     box-sizing: border-box;
     padding: 2mm;
     color: #000;
@@ -412,27 +402,47 @@ button:hover {
   }
 
   #receipt h1 {
-    margin: 0 0 3mm;
+    margin: 0 0 2mm;
     text-align: center;
-    font-size: 16pt;
+    font-size: 17pt;
   }
 
   .receipt-date {
-    margin: 0 0 2mm;
+    margin: 0 0 3mm;
     text-align: center;
     font-size: 8pt;
   }
 
+  #receipt hr {
+    margin: 0 0 2mm;
+    border: 0;
+    border-top: 1px solid #000;
+  }
+
   .receipt-item {
     display: flex;
+    align-items: baseline;
     justify-content: space-between;
     gap: 3mm;
-    padding: 1.5mm 0;
-    border-bottom: 1px dashed #888;
+    padding: 1.75mm 0;
+    border-bottom: 1px dashed #aaa;
+  }
+
+  .receipt-item span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .receipt-item span:last-child {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
   }
 
   .receipt-total {
     margin-top: 4mm;
+    padding-top: 2mm;
+    border-top: 1px solid #000;
     text-align: right;
     font-size: 12pt;
   }
