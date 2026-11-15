@@ -106,6 +106,8 @@ const receiptDiv = document.getElementById("receipt");
 const searchInput = document.getElementById("searchInput");
 const searchWrap = document.querySelector(".search-wrap");
 const searchToggle = document.getElementById("searchToggle");
+const bannerIntro = document.getElementById("bannerIntro");
+const bannerIntroImage = document.getElementById("bannerIntroImage");
 const searchCollapseThreshold = searchWrap ? searchWrap.offsetTop : 0;
 
 function normalizeQuery(value) {
@@ -251,6 +253,18 @@ function printReceipt() {
 renderMenu();
 renderCart();
 printReceiptButton.addEventListener("click", printReceipt);
+
+window.setTimeout(() => {
+  bannerIntroImage.src = "images/banner_2.jpg";
+  bannerIntroImage.alt = "Restaurant banner 2";
+
+  window.setTimeout(() => {
+    bannerIntro.classList.add("is-hidden");
+    window.setTimeout(() => {
+      bannerIntro.hidden = true;
+    }, 300);
+  }, 3000);
+}, 3000);
 
 if (searchInput) {
   searchInput.addEventListener("input", renderMenu);

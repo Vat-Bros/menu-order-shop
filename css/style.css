@@ -10,6 +10,36 @@ body {
   padding: 20px;
 }
 
+.banner-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  background: #000;
+  opacity: 1;
+  transition: opacity 300ms ease;
+}
+
+.banner-intro.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.banner-intro[hidden] {
+  display: none;
+}
+
+.banner-intro img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 h1 {
   margin-bottom: 20px;
 }
@@ -88,6 +118,12 @@ h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
 }
 
 .card {
