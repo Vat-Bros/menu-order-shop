@@ -214,9 +214,16 @@ function renderCart() {
 }
 
 function printReceipt() {
+  receiptDiv.replaceChildren();
+
   const receiptTitle = document.createElement("h1");
-  receiptTitle.textContent = "Menu Order";
-  receiptDiv.replaceChildren(receiptTitle);
+  receiptTitle.textContent = "MENU ORDER";
+  receiptDiv.appendChild(receiptTitle);
+
+  const receiptLabel = document.createElement("p");
+  receiptLabel.className = "receipt-label";
+  receiptLabel.textContent = "SALES RECEIPT";
+  receiptDiv.appendChild(receiptLabel);
 
   const date = document.createElement("p");
   date.className = "receipt-date";
@@ -226,26 +233,54 @@ function printReceipt() {
   const divider = document.createElement("hr");
   receiptDiv.appendChild(divider);
 
+  const table = document.createElement("table");
+  table.className = "receipt-table";
+  const tableHead = document.createElement("thead");
+  tableHead.innerHTML = "<tr><th>Item</th><th>Qty</th><th>Price</th><th>Amount</th></tr>";
+  table.appendChild(tableHead);
+  const tableBody = document.createElement("tbody");
   let total = 0;
   cart.forEach((item) => {
     const itemTotal = item.price * item.qty;
     total += itemTotal;
 
-    const row = document.createElement("div");
-    row.className = "receipt-item";
-
-    const name = document.createElement("span");
-    name.textContent = `${item.name} × ${item.qty}`;
-    const price = document.createElement("span");
-    price.textContent = `${itemTotal.toFixed(2)} ៛`;
-    row.append(name, price);
-    receiptDiv.appendChild(row);
+    const row = document.createElement("tr");
+    const name = document.createElement("td");
+    name.textContent = item.name;
+    const quantity = document.createElement("td");
+    quantity.textContent = String(item.qty);
+    const unitPrice = document.createElement("td");
+    unitPrice.textContent = `${item.price.toFixed(2)}៛`;
+    const amount = document.createElement("td");
+    amount.textContent = `${itemTotal.toFixed(2)}៛`;
+    row.append(name, quantity, unitPrice, amount);
+    tableBody.appendChild(row);
   });
+  table.appendChild(tableBody);
+  receiptDiv.appendChild(table);
+
+  const subtotalLine = document.createElement("p");
+  subtotalLine.className = "receipt-subtotal";
+  const subtotalLabel = document.createElement("span");
+  subtotalLabel.textContent = "Subtotal";
+  const subtotalAmount = document.createElement("span");
+  subtotalAmount.textContent = `${total.toFixed(2)} ៛`;
+  subtotalLine.append(subtotalLabel, subtotalAmount);
+  receiptDiv.appendChild(subtotalLine);
 
   const totalLine = document.createElement("h2");
   totalLine.className = "receipt-total";
-  totalLine.textContent = `Total: ${total.toFixed(2)} ៛`;
+  const totalLabel = document.createElement("span");
+  totalLabel.textContent = "TOTAL";
+  const totalAmount = document.createElement("span");
+  totalAmount.textContent = `${total.toFixed(2)} ៛`;
+  totalLine.append(totalLabel, totalAmount);
   receiptDiv.appendChild(totalLine);
+
+  const footer = document.createElement("p");
+  footer.className = "receipt-footer";
+  footer.textContent = "Thank you for your order!";
+  receiptDiv.appendChild(footer);
 
   window.print();
 }
