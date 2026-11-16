@@ -375,7 +375,7 @@ button:hover {
 }
 
 @page {
-  size: 80mm auto;
+  size: 80mm 210mm;
   margin: 2mm;
 }
 
