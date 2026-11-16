@@ -10,13 +10,6 @@ body {
   padding: 20px;
 }
 
-@media print {
-  body {
-    background: #fff;
-    padding: 0;
-  }
-}
-
 .banner-intro {
   position: fixed;
   inset: 0;
